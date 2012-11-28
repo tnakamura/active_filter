@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.authors     = ["tnakamura"]
   s.email       = ["griefworker@gmail.com"]
   s.homepage    = "https://github.com/tnakamura/active_filter"
-  s.summary     = "Rails engine for allowing users to filter scope dynamically."
+  s.summary     = "A rails engine for filtering scope based on user selections."
   s.description = "ActiveFilter is a Rails engine for allowing users to filter scope dynamically."
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]
