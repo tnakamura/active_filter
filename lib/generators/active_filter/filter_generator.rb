@@ -5,7 +5,7 @@ module ActiveFilter
       source_root File.expand_path("../templates", __FILE__)
 
       def create_filter_file
-        copy_file "filter.rb.erb", "app/filters/#{file_name}_filter.rb"
+        template "filter.rb.erb", "app/filters/#{file_name}_filter.rb"
       end
     end
   end
