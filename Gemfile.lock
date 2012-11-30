@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    active_filter (0.0.1)
+    active_filter (0.0.2)
       rails (~> 3.2.9)
 
 GEM
