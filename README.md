@@ -18,6 +18,10 @@ Or install it yourself as:
 
 ## Usage
 
+Generate filter:
+
+    $ rails g active_filter:filter Blog title description
+
 ```ruby
 class BlogFilter < ActiveFilter::Base
   model Blog
