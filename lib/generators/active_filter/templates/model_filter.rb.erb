@@ -1,5 +1,0 @@
-class <%= @model_name %>Filter < ActiveFilter::Base
-  model <%= @model_name %>
-  fields <%= @fields.map { |f| ':' + f }.join(', ') %>
-end
-
