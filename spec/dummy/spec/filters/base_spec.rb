@@ -8,7 +8,7 @@ describe "Base" do
     context "data を指定したとき" do
       it "@data に指定した data が格納されているべき" do
         @filter = TestFilter1.new(:foo => "bar")
-        
+
         actual = nil
         @filter.instance_eval { actual = @data[:foo] }
         actual.should eq("bar")
@@ -18,7 +18,7 @@ describe "Base" do
     context "data を指定しないとき" do
       it "@data に空の Hash が格納されているべき" do
         @filter = TestFilter1.new
-        
+
         actual = nil
         @filter.instance_eval { actual = @data }
         actual.should be_empty
@@ -27,13 +27,25 @@ describe "Base" do
   end
 
   describe ".model" do
-    class TestFilter2 < ::ActiveFilter::Base
-      model Task
+    context "ActiveRecord::Base を継承したクラスを指定したとき" do
+      class TestFilter2 < ::ActiveFilter::Base
+        model Task
+      end
+
+      it "model に指定したクラスが格納されているべき" do
+        @filter = TestFilter2.new
+        @filter.model.should eq(Task)
+      end
     end
 
-    it "model に指定したクラスが格納されているべき" do
-      @filter = TestFilter2.new
-      @filter.model.should eq(Task)
+    context "ActiveRecord::Base を継承していないクラスを指定したとき" do
+      it "ArgumentError が発生するべき" do
+        proc {
+          class TestFilter10 < ::ActiveFilter::Base
+            model String
+          end
+        }.should raise_error(ArgumentError)
+      end
     end
   end
 

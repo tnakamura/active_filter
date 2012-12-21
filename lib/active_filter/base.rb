@@ -26,7 +26,11 @@ module ActiveFilter
     end
 
     protected
+    # フィルタを作成する対象のモデルを指定します。
     def self.model(klass)
+      unless klass.ancestors.include?(ActiveRecord::Base)
+        raise ArgumentError.new("klass required inherit ActiveRecord::Base")
+      end
       @model = klass
     end
 
