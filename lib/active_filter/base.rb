@@ -1,17 +1,22 @@
 # coding: utf-8
-require "active_filter/rule"
+require "active_filter/field"
 
 module ActiveFilter
   class Base
-    def initialize(params={})
-      @params = params
+    attr_reader :fields
+
+    def initialize(data={})
+      @data = data 
+      @fields = self.class._field_names.map { |name|
+        Field.new(name)
+      }
     end
 
     private
-    def self._rules
+    def self._field_names
       # Class クラスのインスタンスである ActiveFilter::Base オブジェクトの
-      # インスタンス変数にルールを格納
-      @rules ||= []
+      # インスタンス変数にフィールド名を格納
+      @field_names ||= []
     end
 
     def self._model
@@ -25,40 +30,13 @@ module ActiveFilter
       @model = klass
     end
 
-    def self.rule(pattern, lmbda=nil, &block)
-      if lmbda.nil?
-        if block_given?
-          callback = block
-        else
-          # ラムダ式またはブロックのどちらか必須
-          raise ArgumentError, "lambda or block are required!"
-        end
-      else
-        callback = lmbda 
-      end
-
-      _rules << ActiveFilter::Rule.new(pattern, &callback)
-    end
-
-    def self.field(name)
-      self.rule "^#{name}$" do |scope, value|
-        scope.where(name => value)
-      end
-    end
-
     def self.fields(*names)
-      names.each do |name|
-        self.field(name)
-      end
+      @field_names = names
     end
 
     public
     def model
       self.class._model
-    end
-
-    def rules
-      self.class._rules
     end
 
     def each(&block)
@@ -74,14 +52,17 @@ module ActiveFilter
     end
 
     def to_scope
-      scope = self.model.scoped
-      @params.each do |key, value|
-        # 最初にマッチしたルールを適用する
-        rule = self.rules.find { |r| r.match?(key) }
-        if rule
-          scope = rule.filter(scope, value)
+      scope = self.class._model.scoped
+      
+      @fields.each do |field|
+        name = field.name
+        if @data.include?(name)
+          scope = field.filter(scope, @data[name])
+        elsif @data.include?(name.to_sym)
+          scope = field.filter(scope, @data[name.to_sym])
         end
       end
+
       scope
     end
   end

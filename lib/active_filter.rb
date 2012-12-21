@@ -1,6 +1,6 @@
 # coding: utf-8
 require "active_filter/version"
-require "active_filter/rule"
+require "active_filter/field"
 require "active_filter/base"
 
 module ActiveFilter

@@ -3,7 +3,7 @@ require File.expand_path('../../spec_helper', __FILE__)
 
 describe TaskFilter do
   describe "#to_scope" do
-    context "params に name が含まれているとき" do
+    context "data に name が含まれているとき" do
       before do
         FactoryGirl.create(:task, :name => "foo")
         FactoryGirl.create(:task, :name => "bar")
