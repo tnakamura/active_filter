@@ -5,8 +5,14 @@ module ActiveFilter
   class Base
     attr_reader :fields
 
-    def initialize(data={})
-      @data = data 
+    def initialize(scope=nil, data={})
+      if scope.is_a?(Hash)
+        @scope = nil
+        @data = scope
+      else
+        @scope = scope
+        @data = data
+      end
       @fields = self.class._field_names.map { |name|
         Field.new(name)
       }
@@ -23,6 +29,16 @@ module ActiveFilter
       # Class クラスのインスタンスである ActiveFilter::Base オブジェクトの
       # インスタンス変数にモデルの型を格納
       @model
+    end
+
+    # コンストラクタで受け取ったスコープまたは
+    # model.scoped を返す
+    def _scoped
+      if @scope.nil?
+        self.class._model.scoped
+      else
+        @scope
+      end
     end
 
     protected
@@ -56,8 +72,8 @@ module ActiveFilter
     end
 
     def to_scope
-      scope = self.class._model.scoped
-      
+      scope = _scoped
+
       @fields.each do |field|
         name = field.name
         if @data.include?(name)

@@ -3,7 +3,10 @@ require File.expand_path("../../spec_helper", __FILE__)
 
 describe "Base" do
   describe "#initialize" do
-    class TestFilter1 < ::ActiveFilter::Base;end
+    class TestFilter1 < ::ActiveFilter::Base
+      model Task
+      fields :name, :completed
+    end
 
     context "data を指定したとき" do
       it "@data に指定した data が格納されているべき" do
@@ -22,6 +25,19 @@ describe "Base" do
         actual = nil
         @filter.instance_eval { actual = @data }
         actual.should be_empty
+      end
+    end
+
+    context "scope を指定したとき" do
+      before do
+        FactoryGirl.create(:task, :name => "foo", :completed => true)
+        FactoryGirl.create(:task, :name => "bar", :completed => true)
+        FactoryGirl.create(:task, :name => "hoge")
+      end
+
+      it "指定したスコープをベースに絞り込む" do
+        @filter = TestFilter1.new(Task.where(:name => "foo"), :completed => true)
+        @filter.to_scope.count.should eq(1)
       end
     end
   end
