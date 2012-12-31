@@ -13,6 +13,7 @@ module ActiveFilter
         @scope = scope
         @data = data
       end
+
       @fields = self.class._field_names.map { |name|
         Field.new(name)
       }
@@ -75,11 +76,27 @@ module ActiveFilter
       scope = _scoped
 
       @fields.each do |field|
+        # フィールド名でフィルタする
         name = field.name
         if @data.include?(name)
-          scope = field.filter(scope, @data[name])
+          converted_value = field.convert_value(@data[name])
+          scope = field.filter(scope, converted_value, "extract")
         elsif @data.include?(name.to_sym)
-          scope = field.filter(scope, @data[name.to_sym])
+          converted_value = field.convert_value(@data[name.to_sym])
+          scope = field.filter(scope, converted_value, "extract")
+        end
+
+        # lookup_type でフィルタする
+        lookup_types = [field.lookup_type].flatten
+        lookup_types.each do |lookup_type|
+          lookup = "#{name}__#{lookup_type}"
+          if @data.include?(lookup)
+            converted_value = field.convert_value(@data[lookup])
+            scope = field.filter(scope, converted_value, lookup_type)
+          elsif @data.include?(lookup.to_sym)
+            converted_value = field.convert_value(@data[lookup.to_sym])
+            scope = field.filter(scope, converted_value, lookup_type)
+          end
         end
       end
 

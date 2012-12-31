@@ -25,8 +25,15 @@ describe "Field" do
 
     it "name 属性を value で絞り込むスコープを返すべき" do
       @field = ActiveFilter::Field.new("name")
-      @scope = @field.filter(Task, "foo")
+      @scope = @field.filter(Task, "foo", "extract")
       @scope.count.should eq(1)
+    end
+    
+    it "extract にサポートしていない値を指定すると ArgumentError を発生するべき" do
+      proc {
+        @field = ActiveFilter::Field.new("name")
+        @scope = @field.filter(Task, "foo", "hogehoge")
+      }.should raise_error(ArgumentError)
     end
   end
 end
