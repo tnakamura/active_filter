@@ -14,22 +14,53 @@ module ActiveFilter
         @data = data
       end
 
-      @fields = self.class._field_names.map { |name|
-        Field.new(name)
-      }
+      @fields = []
+      self.class._model.columns.each do |column|
+        if self.class._field_names.include?(column.name) ||
+          self.class._field_names.include?(column.name.to_sym)
+          @fields << _create_field_from_column(column)
+        end
+      end
     end
 
     private
     def self._field_names
-      # Class クラスのインスタンスである ActiveFilter::Base オブジェクトの
-      # インスタンス変数にフィールド名を格納
       @field_names ||= []
     end
 
     def self._model
-      # Class クラスのインスタンスである ActiveFilter::Base オブジェクトの
-      # インスタンス変数にモデルの型を格納
       @model
+    end
+
+    def _create_field_from_column(column)
+      case column.type
+      when :primary_key
+        return Field.new(column.name)
+      when :string
+        return StringField.new(column.name)
+      when :text
+        return TextField.new(column.name)
+      when :integer
+        return IntegerField.new(column.name)
+      when :float
+        return FloatField.new(column.name)
+      when :decimal
+        return DecimalField.new(column.name)
+      when :datetime
+        return Field.new(column.name)
+      when :timestamp
+        return Field.new(column.name)
+      when :time
+        return Field.new(column.name)
+      when :date
+        return Field.new(column.name)
+      when :binary
+        return Field.new(column.name)
+      when :boolean
+        return BooleanField.new(column.name)
+      else
+        raise ArgumentError.new("#{column.type} is not supported.")
+      end
     end
 
     # コンストラクタで受け取ったスコープまたは
@@ -45,6 +76,8 @@ module ActiveFilter
     protected
     # フィルタを作成する対象のモデルを指定します。
     def self.model(klass)
+      # Class クラスのインスタンスである ActiveFilter::Base オブジェクトの
+      # インスタンス変数にモデルの型を格納
       unless klass.ancestors.include?(ActiveRecord::Base)
         raise ArgumentError.new("klass required inherit ActiveRecord::Base")
       end
@@ -52,6 +85,8 @@ module ActiveFilter
     end
 
     def self.fields(*names)
+      # Class クラスのインスタンスである ActiveFilter::Base オブジェクトの
+      # インスタンス変数にフィールド名を格納
       @field_names = names
     end
 
