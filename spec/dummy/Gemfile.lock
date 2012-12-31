@@ -2,7 +2,7 @@ PATH
   remote: ../..
   specs:
     active_filter (0.0.2)
-      rails (~> 3.2.9)
+      rails (>= 3)
 
 GEM
   remote: https://rubygems.org/
