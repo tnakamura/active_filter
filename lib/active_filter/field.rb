@@ -1,4 +1,5 @@
 # coding: utf-8
+require "active_support"
 
 module ActiveFilter
   class Field
@@ -50,6 +51,28 @@ module ActiveFilter
   end
 
   class DecimalField < IntegerField;end
+
+  class DateTimeField < Field
+    def lookup_type
+      ["extract", "gt", "lt"]
+    end
+
+    def convert_value(value)
+      value.to_datetime
+    end
+  end
+
+  class DateField < DateTimeField
+    def convert_value(value)
+      value.to_date
+    end
+  end
+
+  class TimeField < DateTimeField
+    def convert_value(value)
+      value.to_time
+    end
+  end
 
   class BooleanField < Field
     def convert_value(value)

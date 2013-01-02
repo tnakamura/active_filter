@@ -47,13 +47,13 @@ module ActiveFilter
       when :decimal
         return DecimalField.new(column.name)
       when :datetime
-        return Field.new(column.name)
+        return DateTimeField.new(column.name)
       when :timestamp
         return Field.new(column.name)
       when :time
-        return Field.new(column.name)
+        return TimeField.new(column.name)
       when :date
-        return Field.new(column.name)
+        return DateField.new(column.name)
       when :binary
         return Field.new(column.name)
       when :boolean

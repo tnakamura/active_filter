@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     active_filter (0.0.2)
+      activesupport (>= 3)
       rails (>= 3)
 
 GEM
