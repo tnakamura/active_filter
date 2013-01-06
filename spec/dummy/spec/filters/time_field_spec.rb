@@ -9,7 +9,7 @@ describe "TimeField" do
 
   describe "lookup_type" do
     subject { @field.lookup_type }
-    it { should eq(["extract", "gt", "lt"]) }
+    it { should eq(["exact", "gt", "lt"]) }
   end
 
   describe "convert_value" do

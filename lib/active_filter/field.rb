@@ -14,12 +14,12 @@ module ActiveFilter
     end
 
     def lookup_type
-      "extract"
+      "exact"
     end
 
     def filter(scope, value, lookup_type)
       case lookup_type
-      when "extract"
+      when "exact"
         return scope.where("#{@name} = ?", value)
       when "gt"
         return scope.where("#{@name} > ?", value)
@@ -36,7 +36,7 @@ module ActiveFilter
 
   class IntegerField < Field
     def lookup_type
-      ["extract", "gt", "lt"]
+      ["exact", "gt", "lt"]
     end
 
     def convert_value(value)
@@ -54,7 +54,7 @@ module ActiveFilter
 
   class DateTimeField < Field
     def lookup_type
-      ["extract", "gt", "lt"]
+      ["exact", "gt", "lt"]
     end
 
     def convert_value(value)

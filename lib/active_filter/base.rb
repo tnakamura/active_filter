@@ -115,10 +115,10 @@ module ActiveFilter
         name = field.name
         if @data.include?(name)
           converted_value = field.convert_value(@data[name])
-          scope = field.filter(scope, converted_value, "extract")
+          scope = field.filter(scope, converted_value, "exact")
         elsif @data.include?(name.to_sym)
           converted_value = field.convert_value(@data[name.to_sym])
-          scope = field.filter(scope, converted_value, "extract")
+          scope = field.filter(scope, converted_value, "exact")
         end
 
         # lookup_type でフィルタする
