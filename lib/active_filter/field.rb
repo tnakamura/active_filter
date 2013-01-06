@@ -21,22 +21,33 @@ module ActiveFilter
       case lookup_type
       when "exact"
         return scope.where("#{@name} = ?", value)
+      when "contains"
+        return scope.where("#{@name} LIKE ?", "%#{value}%")
       when "gt"
         return scope.where("#{@name} > ?", value)
       when "lt"
         return scope.where("#{@name} < ?", value)
+      when "gte"
+        return scope.where("#{@name} >= ?", value)
+      when "lte"
+        return scope.where("#{@name} <= ?", value)
       else
         raise ArgumentError.new("#{lookup_type} is not supported.")
       end
     end
   end
 
-  class StringField < Field;end
-  class TextField < Field;end
+  class StringField < Field
+    def lookup_type
+      ["exact", "contains"]
+    end
+  end
+
+  class TextField < StringField;end
 
   class IntegerField < Field
     def lookup_type
-      ["exact", "gt", "lt"]
+      ["exact", "gt", "lt", "gte", "lte"]
     end
 
     def convert_value(value)
@@ -54,7 +65,7 @@ module ActiveFilter
 
   class DateTimeField < Field
     def lookup_type
-      ["exact", "gt", "lt"]
+      ["exact", "gt", "lt", "gte", "lte"]
     end
 
     def convert_value(value)

@@ -8,7 +8,11 @@ describe "IntegerField" do
 
   describe "lookup_type" do
     subject { @field.lookup_type }
-    it { should eq(["exact", "gt", "lt"]) }
+    it { should include("exact") }
+    it { should include("gt") }
+    it { should include("lt") }
+    it { should include("gte") }
+    it { should include("lte") }
   end
 
   describe "convert_value" do
