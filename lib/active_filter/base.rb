@@ -109,6 +109,7 @@ module ActiveFilter
 
     def to_scope
       scope = _scoped
+      matched = false
 
       @fields.each do |field|
         # フィールド名でフィルタする
@@ -116,9 +117,11 @@ module ActiveFilter
         if @data.include?(name)
           converted_value = field.convert_value(@data[name])
           scope = field.filter(scope, converted_value, "exact")
+          matched = true
         elsif @data.include?(name.to_sym)
           converted_value = field.convert_value(@data[name.to_sym])
           scope = field.filter(scope, converted_value, "exact")
+          matched = true
         end
 
         # lookup_type でフィルタする
@@ -128,11 +131,19 @@ module ActiveFilter
           if @data.include?(lookup)
             converted_value = field.convert_value(@data[lookup])
             scope = field.filter(scope, converted_value, lookup_type)
+            matched = true
           elsif @data.include?(lookup.to_sym)
             converted_value = field.convert_value(@data[lookup.to_sym])
             scope = field.filter(scope, converted_value, lookup_type)
+            matched = true
           end
         end
+      end
+
+      # ユーザーの入力がフィルタにかからなかった場合は
+      # 該当無しにする
+      unless matched
+        scope = scope.where("1 = 2")
       end
 
       scope

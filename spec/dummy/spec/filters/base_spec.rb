@@ -97,6 +97,23 @@ describe "Base" do
         scope.first.name.should eq("foo")
       end
     end
+
+    context "マッチするフィルタが無いとき" do
+      class TestFilter11 < ::ActiveFilter::Base
+        model Task
+        fields :name
+      end
+
+      before do
+        FactoryGirl.create(:task, :name => "foo")
+      end
+
+      it "データを0件返すべき" do
+        @filter = TestFilter11.new(:completed => true)
+        scope = @filter.to_scope
+        scope.count.should eq(0)
+      end
+    end
   end
 
   describe "#model" do
