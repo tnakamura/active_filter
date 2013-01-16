@@ -18,16 +18,6 @@ describe "Base" do
       end
     end
 
-    context "data を指定しないとき" do
-      it "@data に空の Hash が格納されているべき" do
-        @filter = TestFilter1.new
-
-        actual = nil
-        @filter.instance_eval { actual = @data }
-        actual.should be_empty
-      end
-    end
-
     context "scope を指定したとき" do
       before do
         FactoryGirl.create(:task, :name => "foo", :completed => true)
@@ -36,7 +26,8 @@ describe "Base" do
       end
 
       it "指定したスコープをベースに絞り込む" do
-        @filter = TestFilter1.new(Task.where(:name => "foo"), :completed => true)
+        @scope = Task.where(:name => "foo")
+        @filter = TestFilter1.new({:completed => true}, @scope)
         @filter.to_scope.count.should eq(1)
       end
     end
@@ -49,7 +40,7 @@ describe "Base" do
       end
 
       it "model に指定したクラスが格納されているべき" do
-        @filter = TestFilter2.new
+        @filter = TestFilter2.new(:name => "foo")
         @filter.model.should eq(Task)
       end
     end
@@ -72,7 +63,7 @@ describe "Base" do
     end
 
     it "#fields にフィールドが格納されているべき" do
-      @filter = TestFilter6.new
+      @filter = TestFilter6.new(:name => "foo")
       @filter.fields.size.should eq(2)
       @filter.fields[0].name.should eq("name")
       @filter.fields[1].name.should eq("completed")
@@ -122,7 +113,7 @@ describe "Base" do
     end
 
     it "指定したモデルの型を取得できるべき" do
-      @filter = TestFilter8.new
+      @filter = TestFilter8.new(:name => "foo")
       @filter.model.should eq(Task)
     end
   end
@@ -134,7 +125,7 @@ describe "Base" do
     end
 
     it "定義したフィールドを取得できるべき" do
-      @filter = TestFilter9.new
+      @filter = TestFilter9.new(:name => "foo")
       @filter.fields.size.should eq(2)
       @filter.fields[0].name.should eq("name")
       @filter.fields[1].name.should eq("completed")

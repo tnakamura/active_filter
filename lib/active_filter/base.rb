@@ -5,14 +5,9 @@ module ActiveFilter
   class Base
     attr_reader :fields
 
-    def initialize(scope=nil, data={})
-      if scope.is_a?(Hash)
-        @scope = nil
-        @data = scope
-      else
-        @scope = scope
-        @data = data
-      end
+    def initialize(data, scope=nil)
+      @data = data
+      @scope = scope
 
       @fields = []
       self.class._model.columns.each do |column|
