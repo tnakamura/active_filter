@@ -105,6 +105,30 @@ describe "Base" do
         scope.count.should eq(0)
       end
     end
+
+    context "order が設定されているとき" do
+      class TestFilter12 < ::ActiveFilter::Base
+        model Task
+        fields :name, :completed
+        order :deadline_at, "name desc"
+      end
+
+      before do
+        FactoryGirl.create(:task, :name => "aaa", :deadline_at => Date.today + 1)
+        FactoryGirl.create(:task, :name => "bbb", :deadline_at => Date.today)
+        FactoryGirl.create(:task, :name => "ccc", :deadline_at => Date.today)
+      end
+
+      it "date を照準に並べて name を降順に並べるべき" do
+        @filter = TestFilter12.new(:completed => false)
+        scope = @filter.to_scope
+
+        scope.count.should eq(3)
+        scope[0].name.should eq("ccc")
+        scope[1].name.should eq("bbb")
+        scope[2].name.should eq("aaa")
+      end
+    end
   end
 
   describe "#model" do

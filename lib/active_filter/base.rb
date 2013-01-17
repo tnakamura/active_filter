@@ -27,6 +27,10 @@ module ActiveFilter
       @model
     end
 
+    def self._orders
+      @orders ||= []
+    end
+
     def _create_field_from_column(column)
       case column.type
       when :primary_key
@@ -85,6 +89,10 @@ module ActiveFilter
       @field_names = names
     end
 
+    def self.order(*names)
+      @orders = names
+    end
+
     public
     def model
       self.class._model
@@ -139,6 +147,10 @@ module ActiveFilter
       # 該当無しにする
       unless matched
         scope = scope.where("1 = 2")
+      end
+
+      self.class._orders.each do |order|
+        scope = scope.order(order.to_s)
       end
 
       scope
