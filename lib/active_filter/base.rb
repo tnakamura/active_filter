@@ -110,27 +110,26 @@ module ActiveFilter
       self
     end
 
+    def _lookups_from_field(field)
+      lookups = { field.name => "exact" }
+
+      lookup_types = [field.lookup_type].flatten
+      lookup_types.each do |lookup_type|
+        lookup = "#{field.name}__#{lookup_type}"
+        lookups[lookup] = lookup_type
+      end
+
+      lookups
+    end
+    private :_lookups_from_field
+
     def to_scope
       scope = _scoped
       matched = false
 
       @fields.each do |field|
-        # フィールド名でフィルタする
-        name = field.name
-        if @data.include?(name)
-          converted_value = field.convert_value(@data[name])
-          scope = field.filter(scope, converted_value, "exact")
-          matched = true
-        elsif @data.include?(name.to_sym)
-          converted_value = field.convert_value(@data[name.to_sym])
-          scope = field.filter(scope, converted_value, "exact")
-          matched = true
-        end
-
-        # lookup_type でフィルタする
-        lookup_types = [field.lookup_type].flatten
-        lookup_types.each do |lookup_type|
-          lookup = "#{name}__#{lookup_type}"
+        lookups = _lookups_from_field(field)
+        lookups.each do |lookup, lookup_type|
           if @data.include?(lookup)
             converted_value = field.convert_value(@data[lookup])
             scope = field.filter(scope, converted_value, lookup_type)
