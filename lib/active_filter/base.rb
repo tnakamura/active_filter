@@ -18,16 +18,15 @@ module ActiveFilter
       end
     end
 
-    private
-    def self._field_names
+    def self._field_names #:nodoc:
       @field_names ||= []
     end
 
-    def self._model
+    def self._model #:nodoc:
       @model
     end
 
-    def self._orders
+    def self._orders #:nodoc:
       @orders ||= []
     end
 
@@ -61,6 +60,7 @@ module ActiveFilter
         raise ArgumentError.new("#{column.type} is not supported.")
       end
     end
+    private :_create_field_from_column
 
     # コンストラクタで受け取ったスコープまたは
     # model.scoped を返す
@@ -71,8 +71,8 @@ module ActiveFilter
         @scope
       end
     end
+    private :_scoped
 
-    protected
     # フィルタを作成する対象のモデルを指定します。
     def self.model(klass)
       # Class クラスのインスタンスである ActiveFilter::Base オブジェクトの
@@ -93,7 +93,6 @@ module ActiveFilter
       @orders = names
     end
 
-    public
     def model
       self.class._model
     end
