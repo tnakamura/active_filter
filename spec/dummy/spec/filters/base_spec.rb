@@ -131,6 +131,44 @@ describe "Base" do
     end
   end
 
+  describe "#each" do
+    class TestFilter5 < ::ActiveFilter::Base
+      model Task
+      fields :name, :completed
+    end
+
+    context "ブロックを渡したとき" do
+      before do
+        FactoryGirl.create(:task, :name => "aaa")
+        FactoryGirl.create(:task, :name => "aaa")
+        FactoryGirl.create(:task, :name => "bbb")
+      end
+
+      it "フィルタにマッチした要素を処理できるべき" do
+        @filter = TestFilter5.new(:name => "aaa")
+        @data = []
+        @filter.each do |task|
+          @data << task.name
+        end
+
+        @data.size.should eq(2)
+        @data[0].should eq("aaa")
+        @data[1].should eq("aaa")
+      end
+
+      it "フィルタにマッチした要素を map で処理できるべき" do
+        @filter = TestFilter5.new(:name => "aaa")
+        @data = @filter.map do |task|
+          task.name * 2
+        end
+        
+        @data.size.should eq(2)
+        @data[0].should eq("aaaaaa")
+        @data[1].should eq("aaaaaa")
+      end
+    end
+  end
+
   describe "#model" do
     class TestFilter8 < ::ActiveFilter::Base
       model Task

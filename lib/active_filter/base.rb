@@ -3,6 +3,8 @@ require "active_filter/field"
 
 module ActiveFilter
   class Base
+    include ::Enumerable
+
     attr_reader :fields
 
     def initialize(data, scope=nil)
