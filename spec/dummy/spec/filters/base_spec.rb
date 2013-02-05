@@ -161,7 +161,7 @@ describe "Base" do
         @data = @filter.map do |task|
           task.name * 2
         end
-        
+
         @data.size.should eq(2)
         @data[0].should eq("aaaaaa")
         @data[1].should eq("aaaaaa")
@@ -181,16 +181,30 @@ describe "Base" do
   end
 
   describe "#fields" do
-    class TestFilter9 < ::ActiveFilter::Base
-      model Task
-      fields :name, :completed
+    context "fields を指定したとき" do
+      class TestFilter9 < ::ActiveFilter::Base
+        model Task
+        fields :name, :completed
+      end
+
+      it "定義したフィールドを取得できるべき" do
+        @filter = TestFilter9.new(:name => "foo")
+        @filter.fields.size.should eq(2)
+        @filter.fields[0].name.should eq("name")
+        @filter.fields[1].name.should eq("completed")
+      end
     end
 
-    it "定義したフィールドを取得できるべき" do
-      @filter = TestFilter9.new(:name => "foo")
-      @filter.fields.size.should eq(2)
-      @filter.fields[0].name.should eq("name")
-      @filter.fields[1].name.should eq("completed")
+    context "fields を指定しなかったとき" do
+      class TestFilter13 < ::ActiveFilter::Base
+        model Task
+      end
+
+      it "すべてのフィールドを取得できるべき" do
+        @filter = TestFilter13.new(:name => "foo")
+        @filter.fields.size.should eq(9)
+        @filter.fields[0].name.should eq("id")
+      end
     end
   end
 end

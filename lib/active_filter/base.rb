@@ -11,11 +11,21 @@ module ActiveFilter
       @data = data
       @scope = scope
 
-      @fields = []
-      self.class._model.columns.each do |column|
-        if self.class._field_names.include?(column.name) ||
-          self.class._field_names.include?(column.name.to_sym)
-          @fields << _create_field_from_column(column)
+      # TODO: リファクタリング
+      if self.class._field_names.empty?
+        # fields を指定していなかったら
+        # すべての列をフィルタ可能にする
+        @fields = self.class._model.columns.map do |column|
+          _create_field_from_column(column)
+        end
+      else
+        # fields で指定した列だけをフィルタ可能にする
+        @fields = []
+        self.class._model.columns.each do |column|
+          if self.class._field_names.include?(column.name) ||
+            self.class._field_names.include?(column.name.to_sym)
+            @fields << _create_field_from_column(column)
+          end
         end
       end
     end
