@@ -1,13 +1,13 @@
 # coding: utf-8
 require File.expand_path("../../spec_helper", __FILE__)
 
-describe "IntegerField" do
+describe "IntegerFilter" do
   before do
-    @field = ActiveFilter::IntegerField.new("foo")
+    @filter = ActiveFilter::IntegerFilter.new("foo")
   end
 
   describe "lookup_type" do
-    subject { @field.lookup_type }
+    subject { @filter.lookup_type }
     it { should include("exact") }
     it { should include("gt") }
     it { should include("lt") }
@@ -17,12 +17,12 @@ describe "IntegerField" do
 
   describe "convert_value" do
     context "value が 100 のとき" do
-      subject { @field.convert_value(100) }
+      subject { @filter.convert_value(100) }
       it { should eq(100) }
     end
 
     context "value が '100' のとき" do
-      subject { @field.convert_value('100') }
+      subject { @filter.convert_value('100') }
       it { should eq(100) }
     end
   end

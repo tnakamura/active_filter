@@ -1,37 +1,37 @@
 # coding: utf-8
-require "active_filter/field"
+require "active_filter/filter"
 
 module ActiveFilter
   class Base
     include ::Enumerable
 
-    attr_reader :fields
+    attr_reader :filters
 
     def initialize(data, scope=nil)
       @data = data
       @scope = scope
 
       # TODO: リファクタリング
-      if self.class._field_names.empty?
+      if self.class._fields.empty?
         # fields を指定していなかったら
         # すべての列をフィルタ可能にする
-        @fields = self.class._model.columns.map do |column|
-          _create_field_from_column(column)
+        @filters = self.class._model.columns.map do |column|
+          _create_filter_from_column(column)
         end
       else
         # fields で指定した列だけをフィルタ可能にする
-        @fields = []
+        @filters = []
         self.class._model.columns.each do |column|
-          if self.class._field_names.include?(column.name) ||
-            self.class._field_names.include?(column.name.to_sym)
-            @fields << _create_field_from_column(column)
+          if self.class._fields.include?(column.name) ||
+            self.class._fields.include?(column.name.to_sym)
+            @filters << _create_filter_from_column(column)
           end
         end
       end
     end
 
-    def self._field_names #:nodoc:
-      @field_names ||= []
+    def self._fields #:nodoc:
+      @fields ||= []
     end
 
     def self._model #:nodoc:
@@ -42,37 +42,37 @@ module ActiveFilter
       @orders ||= []
     end
 
-    def _create_field_from_column(column)
+    def _create_filter_from_column(column)
       case column.type
       when :primary_key
-        return Field.new(column.name)
+        return Filter.new(column.name)
       when :string
-        return StringField.new(column.name)
+        return StringFilter.new(column.name)
       when :text
-        return TextField.new(column.name)
+        return TextFilter.new(column.name)
       when :integer
-        return IntegerField.new(column.name)
+        return IntegerFilter.new(column.name)
       when :float
-        return FloatField.new(column.name)
+        return FloatFilter.new(column.name)
       when :decimal
-        return DecimalField.new(column.name)
+        return DecimalFilter.new(column.name)
       when :datetime
-        return DateTimeField.new(column.name)
+        return DateTimeFilter.new(column.name)
       when :timestamp
-        return Field.new(column.name)
+        return Filter.new(column.name)
       when :time
-        return TimeField.new(column.name)
+        return TimeFilter.new(column.name)
       when :date
-        return DateField.new(column.name)
+        return DateFilter.new(column.name)
       when :binary
-        return Field.new(column.name)
+        return Filter.new(column.name)
       when :boolean
-        return BooleanField.new(column.name)
+        return BooleanFilter.new(column.name)
       else
         raise ArgumentError.new("#{column.type} is not supported.")
       end
     end
-    private :_create_field_from_column
+    private :_create_filter_from_column
 
     # コンストラクタで受け取ったスコープまたは
     # model.scoped を返す
@@ -98,7 +98,7 @@ module ActiveFilter
     def self.fields(*names)
       # Class クラスのインスタンスである ActiveFilter::Base オブジェクトの
       # インスタンス変数にフィールド名を格納
-      @field_names = names
+      @fields = names
     end
 
     def self.order(*names)
@@ -121,33 +121,33 @@ module ActiveFilter
       self
     end
 
-    def _lookups_from_field(field)
-      lookups = { field.name => "exact" }
+    def _lookups_from_filter(filter)
+      lookups = { filter.name => "exact" }
 
-      lookup_types = [field.lookup_type].flatten
+      lookup_types = [filter.lookup_type].flatten
       lookup_types.each do |lookup_type|
-        lookup = "#{field.name}__#{lookup_type}"
+        lookup = "#{filter.name}__#{lookup_type}"
         lookups[lookup] = lookup_type
       end
 
       lookups
     end
-    private :_lookups_from_field
+    private :_lookups_from_filter
 
     def to_scope
       scope = _scoped
       matched = false
 
-      @fields.each do |field|
-        lookups = _lookups_from_field(field)
+      @filters.each do |filter|
+        lookups = _lookups_from_filter(filter)
         lookups.each do |lookup, lookup_type|
           if @data.include?(lookup)
-            converted_value = field.convert_value(@data[lookup])
-            scope = field.filter(scope, converted_value, lookup_type)
+            converted_value = filter.convert_value(@data[lookup])
+            scope = filter.filter(scope, converted_value, lookup_type)
             matched = true
           elsif @data.include?(lookup.to_sym)
-            converted_value = field.convert_value(@data[lookup.to_sym])
-            scope = field.filter(scope, converted_value, lookup_type)
+            converted_value = filter.convert_value(@data[lookup.to_sym])
+            scope = filter.filter(scope, converted_value, lookup_type)
             matched = true
           end
         end

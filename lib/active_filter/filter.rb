@@ -2,7 +2,7 @@
 require "active_support"
 
 module ActiveFilter
-  class Field
+  class Filter
     attr_reader :name
 
     def initialize(name)
@@ -37,15 +37,15 @@ module ActiveFilter
     end
   end
 
-  class StringField < Field
+  class StringFilter < Filter
     def lookup_type
       ["exact", "contains"]
     end
   end
 
-  class TextField < StringField;end
+  class TextFilter < StringFilter;end
 
-  class IntegerField < Field
+  class IntegerFilter < Filter
     def lookup_type
       ["exact", "gt", "lt", "gte", "lte"]
     end
@@ -55,15 +55,15 @@ module ActiveFilter
     end
   end
 
-  class FloatField < IntegerField
+  class FloatFilter < IntegerFilter
     def convert_value(value)
       value.to_f
     end
   end
 
-  class DecimalField < IntegerField;end
+  class DecimalFilter < IntegerFilter;end
 
-  class DateTimeField < Field
+  class DateTimeFilter < Filter
     def lookup_type
       ["exact", "gt", "lt", "gte", "lte"]
     end
@@ -73,19 +73,19 @@ module ActiveFilter
     end
   end
 
-  class DateField < DateTimeField
+  class DateFilter < DateTimeFilter
     def convert_value(value)
       value.to_date
     end
   end
 
-  class TimeField < DateTimeField
+  class TimeFilter < DateTimeFilter
     def convert_value(value)
       value.to_time
     end
   end
 
-  class BooleanField < Field
+  class BooleanFilter < Filter
     def convert_value(value)
       compare_value = value.is_a?(String) ? value.downcase : value
       case compare_value

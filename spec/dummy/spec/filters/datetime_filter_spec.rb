@@ -2,9 +2,9 @@
 require File.expand_path("../../spec_helper", __FILE__)
 require "date"
 
-describe "DateTimeField" do
+describe "DateTimeFilter" do
   before do
-    @field = ActiveFilter::DateTimeField.new("date")
+    @field = ActiveFilter::DateTimeFilter.new("date")
   end
 
   describe "lookup_type" do

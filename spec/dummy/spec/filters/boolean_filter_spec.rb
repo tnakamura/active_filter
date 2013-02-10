@@ -1,10 +1,10 @@
 # coding: utf-8
 require File.expand_path("../../spec_helper", __FILE__)
 
-describe "BooleanField" do
+describe "BooleanFilter" do
   describe "convert_value" do
     before do
-      @field = ActiveFilter::BooleanField.new("foo")
+      @field = ActiveFilter::BooleanFilter.new("foo")
     end
 
     context "value が nil のとき" do

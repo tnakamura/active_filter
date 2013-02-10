@@ -62,11 +62,11 @@ describe "Base" do
       fields :name, :completed
     end
 
-    it "#fields にフィールドが格納されているべき" do
+    it "#filters にフィールドが格納されているべき" do
       @filter = TestFilter6.new(:name => "foo")
-      @filter.fields.size.should eq(2)
-      @filter.fields[0].name.should eq("name")
-      @filter.fields[1].name.should eq("completed")
+      @filter.filters.size.should eq(2)
+      @filter.filters[0].name.should eq("name")
+      @filter.filters[1].name.should eq("completed")
     end
   end
 
@@ -180,7 +180,7 @@ describe "Base" do
     end
   end
 
-  describe "#fields" do
+  describe "#filters" do
     context "fields を指定したとき" do
       class TestFilter9 < ::ActiveFilter::Base
         model Task
@@ -189,9 +189,9 @@ describe "Base" do
 
       it "定義したフィールドを取得できるべき" do
         @filter = TestFilter9.new(:name => "foo")
-        @filter.fields.size.should eq(2)
-        @filter.fields[0].name.should eq("name")
-        @filter.fields[1].name.should eq("completed")
+        @filter.filters.size.should eq(2)
+        @filter.filters[0].name.should eq("name")
+        @filter.filters[1].name.should eq("completed")
       end
     end
 
@@ -202,8 +202,8 @@ describe "Base" do
 
       it "すべてのフィールドを取得できるべき" do
         @filter = TestFilter13.new(:name => "foo")
-        @filter.fields.size.should eq(9)
-        @filter.fields[0].name.should eq("id")
+        @filter.filters.size.should eq(9)
+        @filter.filters[0].name.should eq("id")
       end
     end
   end
