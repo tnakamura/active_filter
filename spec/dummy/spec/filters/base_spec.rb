@@ -207,5 +207,42 @@ describe "Base" do
       end
     end
   end
+
+  describe ".exclude" do
+    context "exclude のみを指定したとき" do
+      class TestFilter14 < ::ActiveFilter::Base
+        model Task
+        exclude :name
+      end
+
+      before do
+        FactoryGirl.create(:task, :name => "foo")
+        FactoryGirl.create(:task, :name => "bar")
+      end
+
+      it "exclude に指定した列では絞り込めない" do
+        @filter = TestFilter14.new(:name => "foo")
+        @filter.to_scope.count.should eq(0)
+      end
+    end
+
+    context "fields と exclude を指定したとき" do
+      class TestFilter14 < ::ActiveFilter::Base
+        model Task
+        fields :name, :completed
+        exclude "name"
+      end
+
+      before do
+        FactoryGirl.create(:task, :name => "foo")
+        FactoryGirl.create(:task, :name => "bar")
+      end
+
+      it "exclude に指定した列では絞り込めない" do
+        @filter = TestFilter14.new(:name => "foo")
+        @filter.to_scope.count.should eq(0)
+      end
+    end
+  end
 end
 

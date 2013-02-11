@@ -11,23 +11,29 @@ module ActiveFilter
       @data = data
       @scope = scope
 
-      # TODO: リファクタリング
-      if self.class._fields.empty?
-        # fields を指定していなかったら
-        # すべての列をフィルタ可能にする
-        @filters = self.class._model.columns.map do |column|
-          _create_filter_from_column(column)
-        end
-      else
-        # fields で指定した列だけをフィルタ可能にする
-        @filters = []
-        self.class._model.columns.each do |column|
-          if self.class._fields.include?(column.name) ||
-            self.class._fields.include?(column.name.to_sym)
-            @filters << _create_filter_from_column(column)
-          end
-        end
+      columns = self.class._model.columns
+      
+      # fields で指定した列だけをフィルタ可能にする
+      fields = self.class._fields
+      unless fields.empty?
+        columns = columns.select { |column|
+          fields.include?(column.name) ||
+            fields.include?(column.name.to_sym)
+        }
       end
+      
+      # exclude で指定した列を除外する
+      excludes = self.class._exclude
+      unless excludes.empty?
+        columns = columns.reject { |column|
+          fields.include?(column.name) ||
+            fields.include?(column.name.to_sym)
+        }
+      end
+
+      @filters = columns.map { |column|
+        _create_filter_from_column(column)
+      }
     end
 
     def self._fields #:nodoc:
@@ -36,6 +42,10 @@ module ActiveFilter
 
     def self._model #:nodoc:
       @model
+    end
+
+    def self._exclude #:nodoc:
+      @excludes ||= []
     end
 
     def self._orders #:nodoc:
@@ -99,6 +109,10 @@ module ActiveFilter
       # Class クラスのインスタンスである ActiveFilter::Base オブジェクトの
       # インスタンス変数にフィールド名を格納
       @fields = names
+    end
+
+    def self.exclude(*names)
+      @excludes = names
     end
 
     def self.order(*names)
