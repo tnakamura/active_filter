@@ -1,7 +1,7 @@
 PATH
   remote: ../..
   specs:
-    active_filter (0.0.4)
+    active_filter (0.0.5)
       activesupport (>= 3)
       rails (>= 3)
 
