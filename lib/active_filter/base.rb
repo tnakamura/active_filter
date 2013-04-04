@@ -1,5 +1,14 @@
 # coding: utf-8
 require "active_filter/filter"
+require "active_filter/filter/string_filter"
+require "active_filter/filter/text_filter"
+require "active_filter/filter/integer_filter"
+require "active_filter/filter/float_filter"
+require "active_filter/filter/decimal_filter"
+require "active_filter/filter/boolean_filter"
+require "active_filter/filter/date_time_filter"
+require "active_filter/filter/date_filter"
+require "active_filter/filter/time_filter"
 
 module ActiveFilter
   class Base
