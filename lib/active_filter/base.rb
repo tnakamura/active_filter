@@ -142,7 +142,12 @@ module ActiveFilter
     # model.scoped を返す
     def _scoped
       if @scope.nil?
-        self.model.scoped
+        if ActiveRecord::VERSION::STRING < '4.0'
+          self.model.scoped
+        else
+          # Rails 4 以上のとき
+          self.model.all
+        end
       else
         @scope
       end
