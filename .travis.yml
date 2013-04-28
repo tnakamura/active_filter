@@ -5,4 +5,5 @@ rvm:
 before_script:
   - cd ./spec/dummy
   - bundle install
+  - bundle exec rake db:migrate
 script: bundle exec rspec ./spec/filters
