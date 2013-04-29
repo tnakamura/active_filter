@@ -1,4 +1,4 @@
-# ActiveFilter [![Code Climate](https://codeclimate.com/github/tnakamura/active_filter.png)](https://codeclimate.com/github/tnakamura/active_filter) [![Dependency Status](https://gemnasium.com/tnakamura/active_filter.png)](https://gemnasium.com/tnakamura/active_filter)
+# ActiveFilter [![Build Status](https://travis-ci.org/tnakamura/active_filter.png?branch=master)](https://travis-ci.org/tnakamura/active_filter) [![Code Climate](https://codeclimate.com/github/tnakamura/active_filter.png)](https://codeclimate.com/github/tnakamura/active_filter) [![Dependency Status](https://gemnasium.com/tnakamura/active_filter.png)](https://gemnasium.com/tnakamura/active_filter)
 
 ActiveFilter is a Rails engine for allowing users to filter scope dynamically.
 
