@@ -36,6 +36,9 @@ Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 require 'factory_girl'
 Dir["#{File.dirname(__FILE__)}/factories/**/*.rb"].each {|f| require f}
 
+require "coveralls"
+Coveralls.wear!
+
 RSpec.configure do |config|
   #config.mock_with :rr
 end
