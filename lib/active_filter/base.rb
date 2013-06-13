@@ -12,6 +12,21 @@ require "active_filter/filter/time_filter"
 
 module ActiveFilter
   class Base
+    TYPE_FILTER_MAP = {
+      primary_key: Filter,
+      string: StringFilter,
+      text: TextFilter,
+      integer: IntegerFilter,
+      float:  FloatFilter,
+      decimal:  DecimalFilter,
+      datetime: DateTimeFilter,
+      timestamp: Filter,
+      time: TimeFilter,
+      date: DateFilter,
+      binary: Filter,
+      boolean: BooleanFilter,
+    }
+
     include ::Enumerable
 
     attr_reader :filters
@@ -166,31 +181,8 @@ module ActiveFilter
     end
 
     def _create_filter_from_column(column)
-      case column.type
-      when :primary_key
-        return Filter.new(column.name)
-      when :string
-        return StringFilter.new(column.name)
-      when :text
-        return TextFilter.new(column.name)
-      when :integer
-        return IntegerFilter.new(column.name)
-      when :float
-        return FloatFilter.new(column.name)
-      when :decimal
-        return DecimalFilter.new(column.name)
-      when :datetime
-        return DateTimeFilter.new(column.name)
-      when :timestamp
-        return Filter.new(column.name)
-      when :time
-        return TimeFilter.new(column.name)
-      when :date
-        return DateFilter.new(column.name)
-      when :binary
-        return Filter.new(column.name)
-      when :boolean
-        return BooleanFilter.new(column.name)
+      if TYPE_FILTER_MAP.include?(column.type)
+        TYPE_FILTER_MAP[column.type].new(column.name)
       else
         raise ArgumentError.new("#{column.type} is not supported.")
       end
