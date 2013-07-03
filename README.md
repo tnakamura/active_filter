@@ -34,7 +34,10 @@ And then in your controller you could do:
 ```ruby
 class BlogsController < ApplicationController
   def index
-    @filter = BlogFilter.new(params)
+    @filter = BlogFilter.new({
+      title: "foo",
+      description__exact: "bar",
+    })
     @blogs = @filter.to_scope
   end
 end
