@@ -35,6 +35,12 @@ describe "Filter" do
       @scope.count.should eq(1)
     end
 
+    it "endswith を指定すると後方一致のスコープを返すべき" do
+      @filter = ActiveFilter::Filter.new("name")
+      @scope = @filter.filter(Task, "oo", "endswith")
+      @scope.count.should eq(1)
+    end
+
     it "lookup_type にサポートしていない値を指定すると ArgumentError を発生するべき" do
       proc {
         @filter = ActiveFilter::Filter.new("name")
