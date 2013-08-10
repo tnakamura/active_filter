@@ -31,6 +31,8 @@ module ActiveFilter
         return scope.where("#{@name} >= ?", value)
       when "lte"
         return scope.where("#{@name} <= ?", value)
+      when "startswith"
+        return scope.where("#{@name} LIKE ?", "#{value}%")
       else
         raise ArgumentError.new("#{lookup_type} is not supported.")
       end

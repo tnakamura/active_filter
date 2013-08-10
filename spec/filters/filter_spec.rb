@@ -28,8 +28,14 @@ describe "Filter" do
       @scope = @filter.filter(Task, "foo", "exact")
       @scope.count.should eq(1)
     end
-    
-    it "exact にサポートしていない値を指定すると ArgumentError を発生するべき" do
+
+    it "startswith を指定すると先頭一致のスコープを返すべき" do
+      @filter = ActiveFilter::Filter.new("name")
+      @scope = @filter.filter(Task, "fo", "startswith")
+      @scope.count.should eq(1)
+    end
+
+    it "lookup_type にサポートしていない値を指定すると ArgumentError を発生するべき" do
       proc {
         @filter = ActiveFilter::Filter.new("name")
         @scope = @filter.filter(Task, "foo", "hogehoge")
