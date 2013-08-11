@@ -34,26 +34,15 @@ module ActiveFilter
     def initialize(data, scope=nil)
       @data = data
       @scope = scope
-
       columns = self.model.columns
 
       # fields で指定した列だけをフィルタ可能にする
       fields = self.class.__send__(:_fields)
-      unless fields.empty?
-        columns = columns.select { |column|
-          fields.include?(column.name) ||
-            fields.include?(column.name.to_sym)
-        }
-      end
+      columns = _select_columns(columns, fields) unless fields.empty?
 
       # exclude で指定した列を除外する
       excludes = self.class.__send__(:_exclude)
-      unless excludes.empty?
-        columns = columns.reject { |column|
-          fields.include?(column.name) ||
-            fields.include?(column.name.to_sym)
-        }
-      end
+      columns = _reject_columns(columns, excludes) unless excludes.empty?
 
       @filters = columns.map { |column|
         _create_filter_from_column(column)
@@ -153,6 +142,21 @@ module ActiveFilter
     end
 
     private
+
+    def _select_columns(columns, fields)
+      columns.select { |column|
+        fields.include?(column.name) ||
+          fields.include?(column.name.to_sym)
+      }
+    end
+
+    def _reject_columns(columns, fields)
+      columns.reject { |column|
+        fields.include?(column.name) ||
+          fields.include?(column.name.to_sym)
+      }
+    end
+
     # コンストラクタで受け取ったスコープまたは
     # model.scoped を返す
     def _scoped
