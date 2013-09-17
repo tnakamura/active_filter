@@ -1,5 +1,5 @@
 # coding: utf-8
-module ActiveFilter
+module Rails
   module Generators
     class FilterGenerator < ::Rails::Generators::NamedBase
       source_root File.expand_path("../templates", __FILE__)
